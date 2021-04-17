@@ -8,13 +8,21 @@ namespace Arcanoid
     public class Ball
     {
         public Texture2D texture;
-        float ballSpeed;
+        Vector2 ballSpeed;
         public Vector2 position;
-        public void setSpeed(float arg)
+        public void setSpeed(Vector2 arg)
         {
             ballSpeed = arg;
         }
-        public float getSpeed()
+        public void setXSpeed(float arg)
+        {
+            ballSpeed.X = arg;
+        }
+        public void setYSpeed(float arg)
+        {
+            ballSpeed.Y = arg;
+        }
+        public Vector2 getSpeed()
         {
             return ballSpeed;
         }
@@ -42,7 +50,6 @@ namespace Arcanoid
         Plate gamePlate;
         const float ballSpeed = 150;
         SpriteFont arial;
-        float ballxspeed = 0;
         Random x = new Random();
         Block block1;
         Block block2;
@@ -81,9 +88,9 @@ namespace Arcanoid
 
             gameBall.position = new Vector2(Window.ClientBounds.Width / 2 - 10, 100);
 
-            gamePlate.position = Window.ClientBounds.Width / 2;
+            gamePlate.position = Window.ClientBounds.Width / 2 - 45;
 
-            gameBall.setSpeed(0);
+            gameBall.setYSpeed(0);
 
 
             gamePlate.speed = 300;
@@ -108,13 +115,13 @@ namespace Arcanoid
             gameBall.texture = Content.Load<Texture2D>("ball");
             gamePlate.texture = Content.Load<Texture2D>("plate");
             arial = Content.Load<SpriteFont>("arial");
-            block1.texture = Content.Load<Texture2D>("1block");
-            block2.texture = Content.Load<Texture2D>("2block");
-            block3.texture = Content.Load<Texture2D>("3block");
-            block4.texture = Content.Load<Texture2D>("2block");
-            block5.texture = Content.Load<Texture2D>("4block");
-            block6.texture = Content.Load<Texture2D>("1block");
-            block7.texture = Content.Load<Texture2D>("2block");
+            block1.texture = Content.Load<Texture2D>(x.Next(1, 4) + "block");
+            block2.texture = Content.Load<Texture2D>(x.Next(1, 4) + "block");
+            block3.texture = Content.Load<Texture2D>(x.Next(1, 4) + "block");
+            block4.texture = Content.Load<Texture2D>(x.Next(1, 4) + "block");
+            block5.texture = Content.Load<Texture2D>(x.Next(1, 4) + "block");
+            block6.texture = Content.Load<Texture2D>(x.Next(1, 4) + "block");
+            block7.texture = Content.Load<Texture2D>(x.Next(1, 4) + "block");
 
         }
 
@@ -127,11 +134,11 @@ namespace Arcanoid
 
             var kstate = Keyboard.GetState();
 
-            if (kstate.IsKeyDown(Keys.Space) && gameBall.getSpeed() == 0) gameBall.setSpeed(ballSpeed);
+            if (kstate.IsKeyDown(Keys.Space) && gameBall.getSpeed().Y == 0) gameBall.setYSpeed(ballSpeed);
 
-            gameBall.position.Y += gameBall.getSpeed() * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            gameBall.position.Y += gameBall.getSpeed().Y * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            gameBall.position.X += ballxspeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            gameBall.position.X += gameBall.getSpeed().X * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (kstate.IsKeyDown(Keys.Left))
                 gamePlate.position -= gamePlate.speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -146,12 +153,12 @@ namespace Arcanoid
             if (gameBall.position.X < 0)
             {
                 gameBall.position.X = 0;
-                ballxspeed *= -1;
+                gameBall.setXSpeed(gameBall.getSpeed().X * -1);
             }
             if (gameBall.position.X + gameBall.texture.Width > Window.ClientBounds.Width)
             {
                 gameBall.position.X = Window.ClientBounds.Width - gameBall.texture.Width;
-                ballxspeed *= -1;
+                gameBall.setXSpeed(gameBall.getSpeed().X * -1);
             }
 
 
@@ -159,24 +166,25 @@ namespace Arcanoid
             if (gameBall.position.Y + gameBall.texture.Height > Window.ClientBounds.Height - 50)
                 if (gameBall.position.X < (gamePlate.position + gamePlate.texture.Width) && (gameBall.position.X + gameBall.texture.Width) > gamePlate.position)
                 {
-                    gameBall.setSpeed(-ballSpeed);
+                    gameBall.setYSpeed(-ballSpeed);
 
                     if (kstate.IsKeyDown(Keys.Left))
-                        ballxspeed -= 100;
+                        gameBall.setXSpeed(gameBall.getSpeed().X - 100);
 
                     if (kstate.IsKeyDown(Keys.Right))
-                        ballxspeed += 100;
+                        gameBall.setXSpeed(gameBall.getSpeed().X + 100);
 
                 }
+
             if (gameBall.position.Y + gameBall.texture.Height > Window.ClientBounds.Height)
             {
                 gameBall.position = new Vector2(Window.ClientBounds.Width / 2, 100);
-                gameBall.setSpeed(0);
-                ballxspeed = 0;
+                gameBall.setYSpeed(0);
+                gameBall.setXSpeed(0);
             }
 
             if (gameBall.position.Y < block1.texture.Height)
-                gameBall.setSpeed(ballSpeed);
+                gameBall.setYSpeed(ballSpeed);
 
             _graphics.ApplyChanges();
 
@@ -205,9 +213,9 @@ namespace Arcanoid
             _spriteBatch.Draw(block6.texture, block6.position, Color.White);
             _spriteBatch.Draw(block7.texture, block7.position, Color.White);
 
-            _spriteBatch.DrawString(arial, "y: " + (gameBall.getSpeed()).ToString(), new Vector2(0, 40), Color.White);
+            _spriteBatch.DrawString(arial, "y: " + (gameBall.getSpeed().Y).ToString(), new Vector2(0, 40), Color.White);
 
-            _spriteBatch.DrawString(arial, "x: " + (ballxspeed).ToString(), new Vector2(0, 20), Color.White);
+            _spriteBatch.DrawString(arial, "x: " + (gameBall.getSpeed().X).ToString(), new Vector2(0, 20), Color.White);
 
             _spriteBatch.End();
 
