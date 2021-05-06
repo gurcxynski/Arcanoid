@@ -1,5 +1,6 @@
 using Arcanoid.Core;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Arcanoid.Components
 {
@@ -14,9 +15,9 @@ namespace Arcanoid.Components
             _positionComponent = go.GetComponent<PositionComponent>();
         }
 
-        public override void Update(GameObject go)
+        public override void Update(GameObject go, float UpdateTime, KeyboardState kstate, GameWindow window, bool IsCollision)
         {
-            _positionComponent.Position += Velocity;
+            _positionComponent.Position += Velocity * UpdateTime;
         }
     }
 }

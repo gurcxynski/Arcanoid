@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Arcanoid.Core;
 using Arcanoid.GameObjects;
 using Microsoft.Xna.Framework.Input;
-
 namespace Arcanoid
 {
     public class Arcanoid : Game
@@ -38,11 +37,18 @@ namespace Arcanoid
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             var ball = new Ball(Content.Load<Texture2D>("ball"));
+            var palette = new Palette(Content.Load<Texture2D>("plate"));
 
-            ball.GetComponent<VelocityComponent>().Velocity = new Vector2(1, 1);
-            
-            _scene.AddGameObject(ball);
-            
+            ball.GetComponent<VelocityComponent>().Velocity = new Vector2(0, 100);
+            palette.GetComponent<VelocityComponent>().Velocity = new Vector2(0, 0);
+
+            ball.GetComponent<PositionComponent>().Position = new Vector2(Window.ClientBounds.Width / 2 - ball.GetComponent<TextureComponent>().Texture.Width / 2, 50);
+            palette.GetComponent<PositionComponent>().Position = new Vector2(Window.ClientBounds.Width / 2 - palette.GetComponent<TextureComponent>().Texture.Width / 2, Window.ClientBounds.Height - 50);
+
+            GameObject ballObject = _scene.AddGameObject(ball);
+            GameObject paletteObject = _scene.AddGameObject(palette);
+
+            _scene.AddCollision(ballObject, paletteObject);
             _arial = Content.Load<SpriteFont>("arial");
             
             _scene.Start();
@@ -51,7 +57,7 @@ namespace Arcanoid
         protected override void Update(GameTime gameTime)
         {
             var kstate = Keyboard.GetState();
-            _scene.Update();
+            _scene.Update((float)gameTime.ElapsedGameTime.TotalSeconds, kstate, Window);
 //            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 //                Exit();
 //

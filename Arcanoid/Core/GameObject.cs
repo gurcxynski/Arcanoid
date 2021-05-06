@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Arcanoid.Core
 {
@@ -14,11 +16,11 @@ namespace Arcanoid.Core
             return this;
         }
         
-        public void Update()
+        public void Update(float UpdateTime, KeyboardState kstate, GameWindow window, bool IsCollision)
         {
             foreach (var component in _components)
             {
-                component.Update(this);
+                component.Update(this, UpdateTime, kstate, window, IsCollision);
             }
         }
 
