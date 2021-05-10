@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace Arcanoid
+namespace Arkanoid
 {
     public static class Program
     {
         [STAThread]
-        static void Main()
+        private static void Main()
         {
-            using var game = new Arcanoid();
+            using var game = new Arkanoid();
             game.Run();
         }
     }

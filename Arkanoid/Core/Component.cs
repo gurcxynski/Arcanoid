@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Arcanoid.Core
+namespace Arkanoid.Core
 {
     public class Component
     {
@@ -13,9 +13,13 @@ namespace Arcanoid.Core
             
         }
 
-        public virtual void Draw(GameObject go, SpriteBatch spriteBatch)
+        public virtual void Draw(GameObject go)
         {
             
+        }
+
+        public virtual void Dispose()
+        {
         }
     }
 }
